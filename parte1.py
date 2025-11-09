@@ -2,13 +2,12 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --- 1. PREPROCESAMIENTO ---
+# ---  PREPROCESAMIENTO ---
 img = cv2.imread("monedas.jpg", cv2.IMREAD_GRAYSCALE)
 # Para HoughCircles, un desenfoque de mediana suele ser muy bueno para preservar los bordes.
 blur = cv2.medianBlur(img, 9)
 
-# --- 2. DETECCIÓN DE CÍRCULOS CON HOUGH ---
-# Esta es la parte de prueba y error. Estos parámetros son un buen punto de partida.
+# ---  DETECCIÓN DE CÍRCULOS CON HOUGH ---
 #   - dp: Relación inversa de resolución. Siempre 1.
 #   - minDist: Distancia mínima entre centros de círculos detectados.
 #   - param1: Umbral superior para el detector Canny interno de Hough.
@@ -18,7 +17,7 @@ circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, dp=1, minDist=100,
                            param1=150, param2=40,
                            minRadius=80, maxRadius=250)
 
-# --- 3. VISUALIZACIÓN ---
+# ---  VISUALIZACIÓN ---
 img_with_circles = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
 # Asegurarse de que se encontraron círculos antes de procesarlos
