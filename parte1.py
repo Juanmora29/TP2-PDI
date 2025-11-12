@@ -44,8 +44,7 @@ plt.show()
 if circles is not None:
     circles = np.uint16(np.around(circles))
     radios = circles[0, :, 2]
-    print(radios)
-    print(f"Se detectaron {len(radios)} monedas.")
+    #print(f"Se detectaron {len(radios)} monedas.")
 
     # --- CLASIFICACIÓN POR TAMAÑO ---
     # Ajustá estos valores según tu imagen (se calculan en píxeles)
@@ -95,3 +94,107 @@ if circles is not None:
 
 else:
     print("No se detectaron monedas con los parámetros actuales.")
+
+# Umbral (170 es un buen valor)
+thresh_value = 170
+_, mask_dados = cv2.threshold(img, thresh_value, 255, cv2.THRESH_BINARY)
+
+# Buscar contornos
+contornos, _ = cv2.findContours(mask_dados, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+img_color = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+
+# ---- PARÁMETROS DE FILTRADO (AJUSTADOS) ----
+min_area_cara = 35000      # Un área mínima más segura que 500
+epsilon_perc = 0.04       # CAMBIO 1: 4% (más flexible que 0.02)
+min_aspect = 0.7          # CAMBIO 2: Rango más amplio
+max_aspect = 1.3          # CAMBIO 2: Rango más amplio
+
+print("--- Depurando Contornos (Área > 1500) ---")
+
+# Iterar sobre los contornos
+for cnt in contornos:
+    area = cv2.contourArea(cnt)
+    
+    # Filtro de área (para ruido)
+    if area > min_area_cara:
+        
+        # CAMBIO 1 (en la fórmula): Usar epsilon_perc
+        approx = cv2.approxPolyDP(cnt, epsilon_perc * cv2.arcLength(cnt, True), True)
+        num_vertices = len(approx)
+        
+        x, y, w, h = cv2.boundingRect(approx)
+        aspect_ratio = 1.0 # Valor default
+        if h > 0: # Evitar división por cero
+            aspect_ratio = float(w) / h
+            
+        # Imprimimos info de CADA contorno interesante para depurar
+        print(f"Contorno. Área: {area:.0f}, Vértices: {num_vertices}, Aspect: {aspect_ratio:.2f}")
+
+        # Si tiene 4 lados (es un cuadrilátero)
+        if num_vertices == 4:
+            
+            # CAMBIO 2 (en los límites): Usar el rango más flexible
+            if min_aspect <= aspect_ratio <= max_aspect:
+                print("  -> ¡DADO DETECTADO!")
+                cv2.drawContours(img_color, [approx], 0, (0, 0, 255), 4)
+            else:
+                print("  -> Descartado (Aspect Ratio fuera de rango)")
+        else:
+            print("  -> Descartado (No tiene 4 vértices)")
+
+# (Opcional) Habría que agregar el filtro de "contar una sola vez"
+# que teníamos antes, para que si un dado muestra 2 caras, solo cuente 1.
+# Pero este código debería *dibujar* las caras de ambos dados.
+
+plt.imshow(cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB))
+plt.title("Detección con Filtros Flexibles")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
