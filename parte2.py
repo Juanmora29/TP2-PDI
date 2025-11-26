@@ -99,7 +99,6 @@ def procesar_patente_completo(ruta_imagen):
     return img_invertida, img_candidatos, recorte_color, grupo_ajustado, recorte, estado
 
 
-
 # --- CARGA DE IMÁGENES ---
 datos_graficos = []
 for i in range(1, 13):
@@ -110,11 +109,8 @@ for i in range(1, 13):
         datos_graficos.append((nombre, img_bin, img_cand, img_final,
                                grupo_adj, recorte_gris, estado))
 
-
-
 # --- VISUALIZACIÓN PASO 1 — 3 ---
 rows, cols = 3, 4
-
 
 # Paso 1
 fig1, axes1 = plt.subplots(rows, cols, figsize=(16, 8))

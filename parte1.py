@@ -8,7 +8,7 @@ img = cv2.imread("monedas.jpg", cv2.IMREAD_GRAYSCALE)
 # Visualización img original
 plt.imshow(img,cmap="gray"),plt.title("Imagen original (Escala de gris)"),plt.show()
 
-# Para HoughCircles, un desenfoque de mediana suele ser muy bueno para preservar los bordes.
+# Desenfoque de mediana para preservar los bordes.
 blur = cv2.medianBlur(img, 9)
 
 # Visualización imagen blurreada
@@ -30,7 +30,6 @@ img_with_circles = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 # Asegurarse de que se encontraron círculos antes de procesarlos
 if circles is not None:
     circles = np.uint16(np.around(circles))
-    #print(f"Se encontraron {len(circles[0, :])} monedas con HoughCircles.")
     
     # Dibujar los círculos encontrados
     for i in circles[0, :]:
@@ -50,26 +49,26 @@ if circles is not None:
 
 
     categorias = {
-        "Pequeñas (10¢)": [],
+        "Pequeñas (10 centavos)": [],
         "Medianas (1 peso)": [],
-        "Grandes (50¢)": []
+        "Grandes (50 centavos)": []
     }
 
     for i in circles[0, :]:
         r = i[2]
         if r < small_limit:
-            categorias["Pequeñas (10¢)"].append(i)
+            categorias["Pequeñas (10 centavos)"].append(i)
         elif  small_limit < r < large_limit:
             categorias["Medianas (1 peso)"].append(i)
         else:
-            categorias["Grandes (50¢)"].append(i)
+            categorias["Grandes (50 centavos)"].append(i)
 
 
     # --- VISUALIZACIÓN CON COLORES POR CLASE ---
     colores = {
-        "Pequeñas (10¢)": (255, 0, 0),    # Azul
+        "Pequeñas (10 centavos)": (255, 0, 0),    # Azul
         "Medianas (1 peso)": (0, 255, 0),    # Verde
-        "Grandes (50¢)": (0, 0, 255)         # Rojo
+        "Grandes (50 centavos)": (0, 0, 255)         # Rojo
     }
 
     img_clasif = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
@@ -184,7 +183,7 @@ for idx, (x, y, w, h) in enumerate(dados_encontrados_info):
         num_puntos = len(puntos_circles[0, :])
         total_puntos_contados += num_puntos
         
-        # Opcional: Dibujar los puntos detectados
+        # Dibujar los puntos detectados
         for pt in puntos_circles[0, :]:
             center_x, center_y = pt[0] + x, pt[1] + y 
             cv2.circle(img_puntos_contados, (center_x, center_y), pt[2], (255, 0, 0), 2) # Azul
