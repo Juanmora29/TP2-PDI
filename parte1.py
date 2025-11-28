@@ -140,7 +140,7 @@ plt.show()
 # Usamos la imagen gris original para crear un umbral que aisle los puntos oscuros.
 
 _, mask_puntos = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY_INV)
-blur_puntos = cv2.medianBlur(mask_puntos, 5) # Peque帽o desenfoque
+blur_puntos = cv2.medianBlur(mask_puntos, 5) # Pequeño desenfoque
 
 # re-iterar sobre los contornos originales
 # y aplicar los filtros de deteccion de dados nuevamente, para luego contar los puntos.
